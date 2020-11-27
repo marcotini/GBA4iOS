@@ -13,8 +13,7 @@
 int app_argc = 0;
 char **app_argv;
 
-int main(int argc, char * argv[])
-{
+int main(int argc, char * argv[]) {
     app_argc = argc;
     app_argv = argv;
     

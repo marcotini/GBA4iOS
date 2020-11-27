@@ -94,7 +94,7 @@ dispatch_queue_t directoryContentsChangedQueue() {
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
         
-        self.currentDirectory = documentsDirectory; 
+        self.currentDirectory = documentsDirectory;
         self.showFileExtensions = YES;
         self.showFolders = NO;
         self.showSectionTitles = YES;
@@ -102,9 +102,9 @@ dispatch_queue_t directoryContentsChangedQueue() {
         
         _downloadProgress = [[NSProgress alloc] initWithParent:nil userInfo:nil];
         [_downloadProgress addObserver:self
-                    forKeyPath:@"fractionCompleted"
-                       options:NSKeyValueObservingOptionNew
-                       context:GBADownloadROMProgressContext];
+                            forKeyPath:@"fractionCompleted"
+                               options:NSKeyValueObservingOptionNew
+                               context:GBADownloadROMProgressContext];
         
         _currentDownloadsDictionary = [NSMutableDictionary dictionary];
         
@@ -127,7 +127,7 @@ dispatch_queue_t directoryContentsChangedQueue() {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
+    // Do any additional setup after loading the view.
     
     self.clearsSelectionOnViewWillAppear = YES;
     
@@ -149,7 +149,7 @@ dispatch_queue_t directoryContentsChangedQueue() {
     [super viewWillAppear:animated];
     
     [[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle] animated:YES];
-        
+    
     // Sometimes it loses its color when the view appears
     self.downloadProgressView.progressTintColor = GBA4iOS_PURPLE_COLOR;
     
@@ -297,7 +297,7 @@ dispatch_queue_t directoryContentsChangedQueue() {
 - (BOOL)webViewController:(RSTWebViewController *)webViewController shouldInterceptDownloadRequest:(NSURLRequest *)request
 {
     NSString *fileExtension = request.URL.pathExtension.lowercaseString;
-
+    
     if ((([fileExtension isEqualToString:@"gb"] || [fileExtension isEqualToString:@"gbc"] || [fileExtension isEqualToString:@"gba"] || [fileExtension isEqualToString:@"zip"]) ||
          ([request.URL.host.lowercaseString rangeOfString:@"m.coolrom"].location == NSNotFound && [request.URL.host.lowercaseString rangeOfString:@".coolrom"].location != NSNotFound)) &&
         ![self isAwaitingDownloadHTTPResponse])
@@ -321,41 +321,41 @@ dispatch_queue_t directoryContentsChangedQueue() {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"By tapping “Download” below, you confirm that you legally own a physical copy of this game. GBA4iOS does not promote pirating in any form.", @"")
                                                         message:nil delegate:nil cancelButtonTitle:NSLocalizedString(@"Cancel", @"") otherButtonTitles:NSLocalizedString(@"Download", @""), nil];
         alert.tag = LEGAL_NOTICE_ALERT_TAG;
-            [alert showWithSelectionHandler:^(UIAlertView *alertView, NSInteger buttonIndex) {
+        [alert showWithSelectionHandler:^(UIAlertView *alertView, NSInteger buttonIndex) {
+            
+            if (buttonIndex == 1)
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Game Name", @"")
+                                                                message:nil
+                                                               delegate:self
+                                                      cancelButtonTitle:NSLocalizedString(@"Cancel", @"") otherButtonTitles:NSLocalizedString(@"Save", @""), nil];
+                alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+                alert.tag = NAME_ROM_ALERT_TAG;
                 
-                if (buttonIndex == 1)
-                {
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Game Name", @"")
-                                                                    message:nil
-                                                                   delegate:self
-                                                          cancelButtonTitle:NSLocalizedString(@"Cancel", @"") otherButtonTitles:NSLocalizedString(@"Save", @""), nil];
-                    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
-                    alert.tag = NAME_ROM_ALERT_TAG;
-                    
-                    UITextField *textField = [alert textFieldAtIndex:0];
-                    textField.text = [[response suggestedFilename] stringByDeletingPathExtension];
-                    textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
-                    
-                    [alert showWithSelectionHandler:^(UIAlertView *namingAlertView, NSInteger namingButtonIndex) {
-                        
-                        if (namingButtonIndex == 1)
-                        {
-                            NSString *filename = [[namingAlertView textFieldAtIndex:0] text];
-                            [self startDownloadWithFilename:filename downloadTask:downloadTask startDownloadBlock:startDownloadBlock];
-                        }
-                        else
-                        {
-                            startDownloadBlock(NO, nil);
-                        }
-                        
-                    }];
-                }
-                else
-                {
-                    startDownloadBlock(NO, nil);
-                }
+                UITextField *textField = [alert textFieldAtIndex:0];
+                textField.text = [[response suggestedFilename] stringByDeletingPathExtension];
+                textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
                 
-            }];
+                [alert showWithSelectionHandler:^(UIAlertView *namingAlertView, NSInteger namingButtonIndex) {
+                    
+                    if (namingButtonIndex == 1)
+                    {
+                        NSString *filename = [[namingAlertView textFieldAtIndex:0] text];
+                        [self startDownloadWithFilename:filename downloadTask:downloadTask startDownloadBlock:startDownloadBlock];
+                    }
+                    else
+                    {
+                        startDownloadBlock(NO, nil);
+                    }
+                    
+                }];
+            }
+            else
+            {
+                startDownloadBlock(NO, nil);
+            }
+            
+        }];
         
     }];
 }
@@ -458,7 +458,7 @@ dispatch_queue_t directoryContentsChangedQueue() {
         
         if (progress.fractionCompleted > 0)
         {
-            dispatch_async(dispatch_get_main_queue(), ^{                
+            dispatch_async(dispatch_get_main_queue(), ^{
                 [self.downloadProgressView setProgress:progress.fractionCompleted animated:YES];
             });
         }
@@ -645,13 +645,13 @@ dispatch_queue_t directoryContentsChangedQueue() {
                     {
                         // Too many false positives
                         /*
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Unsupported File", @"")
-                                                                            message:NSLocalizedString(@"Make sure the zip file contains either a GBA or GBC ROM and try again.", @"")
-                                                                           delegate:nil
-                                                                  cancelButtonTitle:NSLocalizedString(@"Dismiss", @"") otherButtonTitles:nil];
-                            [alert show];
-                        });*/
+                         dispatch_async(dispatch_get_main_queue(), ^{
+                         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Unsupported File", @"")
+                         message:NSLocalizedString(@"Make sure the zip file contains either a GBA or GBC ROM and try again.", @"")
+                         delegate:nil
+                         cancelButtonTitle:NSLocalizedString(@"Dismiss", @"") otherButtonTitles:nil];
+                         [alert show];
+                         });*/
                         
                     }
                     else if ([error code] == NSFileWriteInvalidFileNameError)
@@ -1146,7 +1146,7 @@ dispatch_queue_t directoryContentsChangedQueue() {
         
         return;
     }
-        
+    
     void(^showEmulationViewController)(void) = ^(void)
     {
         DLog(@"Unique Name: %@", rom.uniqueName);
@@ -1158,7 +1158,7 @@ dispatch_queue_t directoryContentsChangedQueue() {
             cachedROMs[[rom.filepath lastPathComponent]] = rom.uniqueName;
             [cachedROMs writeToFile:[self cachedROMsPath] atomically:YES];
         }
-                
+        
         [[GBASyncManager sharedManager] setShouldShowSyncingStatus:NO];
         
         
@@ -1434,7 +1434,7 @@ dispatch_queue_t directoryContentsChangedQueue() {
     
     NSString *saveStateParentDirectory = [documentsDirectory stringByAppendingPathComponent:@"Save States"];
     NSString *saveStateDirectory = [saveStateParentDirectory stringByAppendingPathComponent:rom.name];
-        
+    
     // Handled by deletedFileAtIndexPath
     //[[NSFileManager defaultManager] removeItemAtPath:filepath error:nil];
     [[NSFileManager defaultManager] removeItemAtPath:[documentsDirectory stringByAppendingPathComponent:saveFile] error:nil];
@@ -1445,7 +1445,7 @@ dispatch_queue_t directoryContentsChangedQueue() {
     NSMutableDictionary *cachedROMs = [NSMutableDictionary dictionaryWithContentsOfFile:[self cachedROMsPath]];
     [cachedROMs removeObjectForKey:romName];
     [cachedROMs writeToFile:[self cachedROMsPath] atomically:YES];
-        
+    
     [self deleteFileAtIndexPath:indexPath animated:YES];
     
     [[GBASyncManager sharedManager] deleteSyncingDataForROMWithName:romName uniqueName:romUniqueName];
@@ -1628,9 +1628,9 @@ dispatch_queue_t directoryContentsChangedQueue() {
 {
     // Navigation controller is different each time, so we need to update theme every time we present this view controller
     /*if (_theme == theme)
-    {
-        return;
-    }*/
+     {
+     return;
+     }*/
     
     _theme = theme;
     

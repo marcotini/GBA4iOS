@@ -41,7 +41,7 @@
     [super viewDidLoad];
     
     NSURL *acknowledgementsURL = [[NSBundle mainBundle] URLForResource:@"Acknowledgements" withExtension:@"html"];
-    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithFileURL:acknowledgementsURL options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType}  documentAttributes:nil error:nil];
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithURL:acknowledgementsURL options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType}  documentAttributes:nil error:nil];
     
     [attributedString enumerateAttribute:NSFontAttributeName inRange:NSMakeRange(0, attributedString.length) options:0 usingBlock:^(UIFont *font, NSRange range, BOOL *stop) {
         
